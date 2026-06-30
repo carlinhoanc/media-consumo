@@ -1,6 +1,5 @@
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:mediaconsumo/components/imput/easy_mask.dart';
 import 'package:mediaconsumo/components/imput/mascara.dart';
 import 'package:mediaconsumo/components/imput/text.dart';
@@ -30,6 +29,7 @@ class MediasDetalhes extends StatefulWidget {
 enum Options { delete, update, ficar }
 
 class _MediasDetalhesState extends State {
+
   Media media;
 
   _MediasDetalhesState(this.media);
@@ -48,8 +48,8 @@ class _MediasDetalhesState extends State {
   var _data = TextEditingController();
   var _media = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  ValueLabel valuePosto;
-  ValueLabel valueVeiculo;
+  ValueLabel? valuePosto;
+  ValueLabel? valueVeiculo;
 
   @override
   void initState() {
@@ -105,7 +105,7 @@ class _MediasDetalhesState extends State {
                 icone: Icons.monetization_on,
                 readOnly: true,
                 validar: true,
-                maxLength: 10,
+                maxLength: 10, dica: '', tipoValidar: '', minLines: 10, maxLines: 10,
               ),
               EasyMaskImput(
                 controlador: _kms,
@@ -115,7 +115,7 @@ class _MediasDetalhesState extends State {
                 validar: true,
                 maxLength: 7,
                 maskFormatter: TextInputMask(mask: '999999', reverse: true),
-                teclado: TextInputType.numberWithOptions(),
+                teclado: TextInputType.numberWithOptions(), dica: '', tipoValidar: '', minLines: 7, maxLines: 7,
               ),
               MascaraImput(
                 controlador: _litros,
@@ -125,7 +125,7 @@ class _MediasDetalhesState extends State {
                 validar: true,
                 maxLength: 7,
                 maskFormatter: TextInputMask(mask: '9999.99', reverse: true),
-                teclado: TextInputType.numberWithOptions(),
+                teclado: TextInputType.numberWithOptions(), dica: '', tipoValidar: '', minLines: 7, maxLines: 7,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -142,7 +142,7 @@ class _MediasDetalhesState extends State {
                             icone: Icons.monetization_on,
                             readOnly: true,
                             validar: true,
-                            maxLength: 50,
+                            maxLength: 50, dica: '', tipoValidar: '', minLines: 50, maxLines: 50,
                           ),
                         ),
                       ],
@@ -165,7 +165,7 @@ class _MediasDetalhesState extends State {
                                 onChange: (ValueLabel selected) {
                                   setState(() {
                                     valuePosto = selected;
-                                    _posto.text = valuePosto.title;
+                                    _posto.text = valuePosto!.title;
                                   });
                                 },
                               );
@@ -192,7 +192,7 @@ class _MediasDetalhesState extends State {
                             icone: Icons.monetization_on,
                             readOnly: true,
                             validar: true,
-                            maxLength: 20,
+                            maxLength: 20, dica: '', tipoValidar: '', minLines: 20, maxLines: 20,
                           ),
                         ),
                       ],
@@ -215,7 +215,7 @@ class _MediasDetalhesState extends State {
                                 onChange: (ValueLabel selected) {
                                   setState(() {
                                     valueVeiculo = selected;
-                                    _veiculo.text = valueVeiculo.title;
+                                    _veiculo.text = valueVeiculo!.title;
                                   });
                                 },
                               );
@@ -242,7 +242,7 @@ class _MediasDetalhesState extends State {
                             icone: Icons.monetization_on,
                             readOnly: true,
                             validar: true,
-                            maxLength: 10,
+                            maxLength: 10, dica: '', tipoValidar: '', minLines: 10, maxLines: 10,
                           ),
                         ),
                       ],
@@ -255,30 +255,18 @@ class _MediasDetalhesState extends State {
                         Container(
                           child: TextButton(
                             onPressed: () {
-                              DatePicker.showDatePicker(context,
-                                  showTitleActions: true,
-                                  minTime: DateTime(2020),
-                                  maxTime: DateTime(2050),
-                                  theme: DatePickerTheme(
-                                      cancelStyle:
-                                          TextStyle(color: Colors.white),
-                                      headerColor: Colors.green[900],
-                                      backgroundColor: Colors.white,
-                                      itemStyle: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                      doneStyle: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16)), onChanged: (date) {
-                                print('change $date');
-                              }, onConfirm: (date) {
-                                print('confirm $date');
-                                String minhaData = dataUtils.formatarData(date);
-                                _data.text = minhaData;
-                              },
-                                  currentTime: DateTime.now(),
-                                  locale: LocaleType.pt);
+                              showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2020),
+                                  lastDate: DateTime(2050),
+                                  locale: const Locale('pt', 'PT'),
+                                ).then((date) {
+                                  if (date != null) {
+                                    String minhaData = dataUtils.formatarData(date);
+                                    _data.text = minhaData;
+                                  }
+                                });
                             },
                             child: Icon(Icons.more_time),
                           ),
@@ -338,7 +326,7 @@ class _MediasDetalhesState extends State {
   }
 
   Future<void> validadeFormulario(bool redireciona) async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(ini.process)));
     }
@@ -348,20 +336,22 @@ class _MediasDetalhesState extends State {
         !_posto.text.isEmpty &&
         !_data.text.isEmpty &&
         !_veiculo.text.isEmpty) {
-      if (double.tryParse(_kms.text.toString()) > 0 ||
-          double.tryParse(_litros.text.toString()) > 0) {
-        var m = double.tryParse(_kms.text.toString()) /
-            double.tryParse(_litros.text.toString());
+      final int kmsInt = int.tryParse(_kms.text.toString()) ?? 0;
+      final double kmsDouble = kmsInt.toDouble();
+      final double litrosDouble =
+          double.tryParse(_litros.text.toString()) ?? 0.0;
+      if (kmsDouble > 0 && litrosDouble > 0) {
+        var m = kmsDouble / litrosDouble;
         _media.text = m.toStringAsFixed(2);
 
-        var idPosto = valuePosto != null? valuePosto.value : media.idPosto;
-        var idVeiculo = valueVeiculo != null? valueVeiculo.value : media.idVeiculo;
+        var idPosto = valuePosto?.value ?? media.idPosto;
+        var idVeiculo = valueVeiculo?.value ?? media.idVeiculo;
 
         await dbHelper.update(
           Media.withId(
             id: media.id,
-            kms: int.tryParse(_kms.text.toString()),
-            litros: double.tryParse(_litros.text.toString()),
+            kms: kmsInt,
+            litros: litrosDouble,
             idPosto: idPosto,
             posto: _posto.text.toString(),
             idVeiculo: idVeiculo,

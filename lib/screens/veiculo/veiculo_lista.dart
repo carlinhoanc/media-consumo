@@ -16,7 +16,7 @@ class _VeiculoListState extends State {
   var dbHelper = new VeiculoHelper();
   var txt = VeiculoTexto();
 
-  List<Veiculo> veiculo;
+  late List<Veiculo> veiculo;
   int veiculoCount = 0;
 
   @override

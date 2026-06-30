@@ -1,13 +1,13 @@
 class Manutencao {
-  int id;
-  String nomeManutencao;
-  String descricaoManutencao;
-  String dataDaManutencao;
-  int idVeiculo;
-  String veiculo;
-  int kmsAtual;
-  int kmsProximaManutencao;
-  int diasProximaManutencao;
+  late int id;
+  late String nomeManutencao;
+  late String descricaoManutencao;
+  late String dataDaManutencao;
+  late int idVeiculo;
+  late String veiculo;
+  late int kmsAtual;
+  late int kmsProximaManutencao;
+  late int diasProximaManutencao;
 
   Manutencao.name(
       this.nomeManutencao,
@@ -20,25 +20,25 @@ class Manutencao {
       this.diasProximaManutencao);
 
   Manutencao(
-      {this.nomeManutencao,
-      this.descricaoManutencao,
-      this.dataDaManutencao,
-      this.idVeiculo,
-      this.veiculo,
-      this.kmsAtual,
-      this.kmsProximaManutencao,
-      this.diasProximaManutencao});
+      {required this.nomeManutencao,
+      required this.descricaoManutencao,
+      required this.dataDaManutencao,
+      required this.idVeiculo,
+      required this.veiculo,
+      required this.kmsAtual,
+      required this.kmsProximaManutencao,
+      required this.diasProximaManutencao});
 
   Manutencao.withId(
-      {this.id,
-      this.nomeManutencao,
-      this.descricaoManutencao,
-      this.dataDaManutencao,
-      this.idVeiculo,
-      this.veiculo,
-      this.kmsAtual,
-      this.kmsProximaManutencao,
-      this.diasProximaManutencao});
+      {required this.id,
+      required this.nomeManutencao,
+      required this.descricaoManutencao,
+      required this.dataDaManutencao,
+      required this.idVeiculo,
+      required this.veiculo,
+      required this.kmsAtual,
+      required this.kmsProximaManutencao,
+      required this.diasProximaManutencao});
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -61,12 +61,12 @@ class Manutencao {
     this.nomeManutencao = o["nomeManutencao"].toString();
     this.descricaoManutencao = o["descricaoManutencao"].toString();
     this.dataDaManutencao = o["dataDaManutencao"].toString();
-    this.idVeiculo = int.tryParse(o["idVeiculo"].toString());
+    this.idVeiculo = int.tryParse(o["idVeiculo"].toString())!;
     this.veiculo = o["veiculo"].toString();
     this.kmsProximaManutencao =
-        int.tryParse(o["kmsProximaManutencao"].toString());
-    this.kmsAtual = int.tryParse(o["kmsAtual"].toString());
+        int.tryParse(o["kmsProximaManutencao"].toString())!;
+    this.kmsAtual = int.tryParse(o["kmsAtual"].toString())!;
     this.diasProximaManutencao =
-        int.tryParse(o["diasProximaManutencao"].toString());
+        int.tryParse(o["diasProximaManutencao"].toString())!;
   }
 }

@@ -7,7 +7,7 @@ class DropDownVeiculos extends StatefulWidget {
 }
 
 class _DropDownVeiculosState extends State<DropDownVeiculos> {
-  String _chosenValue;
+  late String _chosenValue;
   var txt = VeiculoTexto();
 
   @override
@@ -42,9 +42,9 @@ class _DropDownVeiculosState extends State<DropDownVeiculos> {
                   fontSize: 16,
                   fontWeight: FontWeight.w600),
             ),
-            onChanged: (String value) {
+            onChanged: (String? value) {
               setState(() {
-                _chosenValue = value;
+                _chosenValue = value!;
               });
             },
           ),

@@ -14,7 +14,7 @@ const String tableSql = 'CREATE TABLE $_tabelaNome(id INTEGER PRIMARY KEY, '
     'placa STRING)';
 
 class VeiculoHelper {
-  Database _db;
+  late Database _db;
   var ini = DbIni();
 
   Future<Database> get db async {

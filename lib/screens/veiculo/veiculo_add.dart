@@ -30,7 +30,7 @@ class VeiculoAddState extends State {
   var _ano = TextEditingController();
   var _placa = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  ValueLabel valueTipo;
+  late ValueLabel valueTipo;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class VeiculoAddState extends State {
                               icone: Icons.monetization_on,
                               readOnly: true,
                               validar: true,
-                              maxLength: 20,
+                              maxLength: 20, dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
                             ),
                           ),
                         ],
@@ -101,7 +101,7 @@ class VeiculoAddState extends State {
                   icone: Icons.monetization_on,
                   readOnly: false,
                   validar: true,
-                  maxLength: 15,
+                  maxLength: 15, dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
                 ),
                 TextImput(
                   controlador: _modelo,
@@ -109,7 +109,7 @@ class VeiculoAddState extends State {
                   icone: Icons.monetization_on,
                   readOnly: false,
                   validar: true,
-                  maxLength: 15,
+                  maxLength: 15, dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
                 ),
                 MascaraImput(
                   controlador: _placa,
@@ -119,7 +119,7 @@ class VeiculoAddState extends State {
                   validar: true,
                   maxLength: 8,
                   maskFormatter:
-                      TextInputMask(mask: ['AAA-9N99', 'AAA-9A99', 'AAA-9999']),
+                      TextInputMask(mask: ['AAA-9N99', 'AAA-9A99', 'AAA-9999']), dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
                 ),
                 TextImput(
                   controlador: _cor,
@@ -127,7 +127,7 @@ class VeiculoAddState extends State {
                   icone: Icons.monetization_on,
                   readOnly: false,
                   validar: true,
-                  maxLength: 15,
+                  maxLength: 15, dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
                 ),
                 MascaraImput(
                   controlador: _ano,
@@ -137,7 +137,7 @@ class VeiculoAddState extends State {
                   readOnly: false,
                   validar: true,
                   maxLength: 4,
-                  maskFormatter: TextInputMask(mask: '9999'),
+                  maskFormatter: TextInputMask(mask: '9999'), dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -155,7 +155,7 @@ class VeiculoAddState extends State {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.green,
+                        backgroundColor: Colors.green,
                       ),
                     ),
                   ),
@@ -176,7 +176,7 @@ class VeiculoAddState extends State {
   }
 
   void salvar() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(ini.process)));
     }
@@ -191,7 +191,7 @@ class VeiculoAddState extends State {
         _modelo.text.toString(),
         _cor.text.toString(),
         valueTipo.value,
-        int.tryParse(_ano.text.toString()),
+        int.parse(_ano.text.toString()),
         _placa.text.toString().toUpperCase(),
       ));
       Navigator.pop(context, true);

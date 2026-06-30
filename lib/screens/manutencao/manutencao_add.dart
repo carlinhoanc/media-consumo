@@ -1,6 +1,5 @@
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:mediaconsumo/components/imput/mascara.dart';
 import 'package:mediaconsumo/components/imput/text.dart';
 import 'package:mediaconsumo/data/manutencao_helper.dart';
@@ -31,10 +30,12 @@ class ManutencaoAddState extends State {
   var _kmsProximaManutencao = TextEditingController();
   var _diasProximaManutencao = TextEditingController();
   var _veiculo = TextEditingController();
-  ValueLabel valueVeiculo;
+  late ValueLabel valueVeiculo;
 
   final _formKey = GlobalKey<FormState>();
   var veiculoDb = VeiculoHelper();
+
+  get child => null;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +69,7 @@ class ManutencaoAddState extends State {
                                   icone: Icons.monetization_on,
                                   readOnly: true,
                                   validar: true,
-                                  maxLength: 20,
+                                  maxLength: 20, dica: '', tipoValidar: '', minLines: 20, maxLines: 20,
                                 ),
                               ),
                             ],
@@ -108,7 +109,7 @@ class ManutencaoAddState extends State {
                       rotulo: txt.nomeManutencao,
                       icone: Icons.monetization_on,
                       readOnly: false,
-                      validar: true,
+                      validar: true, dica: '', tipoValidar: '', maxLength: 10, minLines: 10, maxLines: 10,
                     ),
                     TextImput(
                       controlador: _descricaoManutencao,
@@ -118,7 +119,7 @@ class ManutencaoAddState extends State {
                       readOnly: false,
                       validar: true,
                       maxLines: 5,
-                      maxLength: 500,
+                      maxLength: 500, dica: '', tipoValidar: '', minLines: 10,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +136,7 @@ class ManutencaoAddState extends State {
                                   icone: Icons.monetization_on,
                                   readOnly: true,
                                   validar: true,
-                                  maxLength: 10,
+                                  maxLength: 10, dica: '', tipoValidar: '', minLines: 10, maxLines: 10,
                                 ),
                               ),
                             ],
@@ -148,32 +149,18 @@ class ManutencaoAddState extends State {
                               Container(
                                 child: TextButton(
                                   onPressed: () {
-                                    DatePicker.showDatePicker(context,
-                                        showTitleActions: true,
-                                        minTime: DateTime(2020),
-                                        maxTime: DateTime(2050),
-                                        theme: DatePickerTheme(
-                                            cancelStyle:
-                                                TextStyle(color: Colors.white),
-                                            headerColor: Colors.green[900],
-                                            backgroundColor: Colors.white,
-                                            itemStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18),
-                                            doneStyle: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16)),
-                                        onChanged: (date) {
-                                      print('change $date');
-                                    }, onConfirm: (date) {
-                                      print('confirm $date');
-                                      String minhaData =
-                                          dataUtils.formatarData(date);
-                                      _dataDaMenutencao.text = minhaData;
-                                    },
-                                        currentTime: DateTime.now(),
-                                        locale: LocaleType.pt);
+                                    showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2020),
+                                      lastDate: DateTime(2050),
+                                      locale: const Locale('pt', 'PT'),
+                                    ).then((date) {
+                                      if (date != null) {
+                                        String minhaData = dataUtils.formatarData(date);
+                                        _dataDaMenutencao.text = minhaData;
+                                      }
+                                    });
                                   },
                                   child: Icon(Icons.more_time),
                                 ),
@@ -191,7 +178,7 @@ class ManutencaoAddState extends State {
                       maskFormatter: TextInputMask(mask: '9999', reverse: true),
                       readOnly: false,
                       validar: true,
-                      maxLength: 4,
+                      maxLength: 4, dica: '', tipoValidar: '', minLines: 10, maxLines: 10,
                     ),
                     MascaraImput(
                       controlador: _kmsAtual,
@@ -202,7 +189,7 @@ class ManutencaoAddState extends State {
                           TextInputMask(mask: '99999999', reverse: true),
                       readOnly: false,
                       validar: true,
-                      maxLength: 9,
+                      maxLength: 9, dica: '', tipoValidar: '', minLines: 10, maxLines: 10,
                     ),
                     MascaraImput(
                       controlador: _kmsProximaManutencao,
@@ -213,7 +200,7 @@ class ManutencaoAddState extends State {
                       validar: true,
                       maxLength: 9,
                       maskFormatter:
-                          TextInputMask(mask: '99999999', reverse: true),
+                          TextInputMask(mask: '99999999', reverse: true), dica: '', tipoValidar: '', minLines: 10, maxLines: 10,
                     ),
                   ],
                 ),
@@ -234,7 +221,7 @@ class ManutencaoAddState extends State {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
+                      backgroundColor: Colors.green,
                     ),
                   ),
                 ),
@@ -262,7 +249,7 @@ class ManutencaoAddState extends State {
   void salvar() async {
     String parseData = dataUtils.parseDate(_dataDaMenutencao.text.toString());
 
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(ini.process)));
     }
@@ -280,9 +267,9 @@ class ManutencaoAddState extends State {
         parseData,
         valueVeiculo.value,
         _veiculo.text.toString(),
-        int.tryParse(_kmsAtual.text.toString()),
-        int.tryParse(_kmsProximaManutencao.text.toString()),
-        int.tryParse(_diasProximaManutencao.text.toString()),
+        int.tryParse(_kmsAtual.text.toString()) ?? 0,
+        int.tryParse(_kmsProximaManutencao.text.toString())?? 0,
+        int.tryParse(_diasProximaManutencao.text.toString()) ?? 0,
       ));
       Navigator.pop(context, true);
     }

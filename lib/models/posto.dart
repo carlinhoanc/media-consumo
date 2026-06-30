@@ -1,48 +1,50 @@
 class Posto {
-  int id;
-  int value;
-  String nomePosto;
-  String descricao;
-  String cidade;
-  String cep;
-  String rua;
-  String numero;
-  String obs;
-  String uf;
-  String latitude;
-  String longitude;
-  String nome;
-  String title;
+  late int id;
+  late int value;
+  late String nomePosto;
+  late String descricao;
+  late String cidade;
+  late String cep;
+  late String rua;
+  late String numero;
+  late String obs;
+  late String uf;
+  late String latitude;
+  late String longitude;
+  late String nome;
+  late String title;
 
-  Posto.name(this.nomePosto, this.descricao, this.cidade, this.cep, this.rua,
+  Posto.name(
+      this.nomePosto, this.descricao, this.cidade, this.cep, this.rua,
       this.numero, this.obs, this.uf, this.latitude, this.longitude);
 
   Posto.nomeComCidade(this.id, this.nome);
 
   Posto(
-      {this.nomePosto,
-      this.descricao,
-      this.cidade,
-      this.cep,
-      this.rua,
-      this.numero,
-      this.obs,
-      this.uf,
-      this.latitude,
-      this.longitude});
+      {required this.nomePosto,
+      required this.descricao,
+      required this.cidade,
+      required this.cep,
+      required this.rua,
+      required this.numero,
+      required this.obs,
+      required this.uf,
+      required this.latitude,
+      required this.longitude});
 
   Posto.withId(
-      {this.id,
-      this.nomePosto,
-      this.descricao,
-      this.cidade,
-      this.cep,
-      this.rua,
-      this.numero,
-      this.obs,
-      this.uf,
-      this.latitude,
-      this.longitude});
+      {
+        required this.id,
+        required this.nomePosto,
+        required this.descricao,
+        required this.cidade,
+        required this.cep,
+        required this.rua,
+        required this.numero,
+        required this.obs,
+        required this.uf,
+        required this.latitude,
+        required this.longitude});
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();

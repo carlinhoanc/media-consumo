@@ -2,7 +2,9 @@ class ValueLabel {
   int value;
   String title;
 
-  ValueLabel({this.value, this.title});
+  ValueLabel({
+    required this.value,
+    required this.title});
 
   factory ValueLabel.fromJsonIdStr(Map<String, dynamic> parsedJson) {
     return ValueLabel(

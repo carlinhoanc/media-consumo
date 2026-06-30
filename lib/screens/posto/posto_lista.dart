@@ -16,7 +16,7 @@ class _PostoListState extends State {
   var dbHelper = new PostoHelper();
   var txt = PostosTexto();
 
-  List<Posto> posto;
+  late List<Posto> posto;
   int postoCount = 0;
 
   @override

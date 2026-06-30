@@ -17,7 +17,7 @@ class _MediaListState extends State {
   var dbHelper = new MediaHelper();
   var txt = MediaTexto();
 
-  List<Media> media;
+  late List<Media> media;
   int mediaCount = 0;
 
   @override

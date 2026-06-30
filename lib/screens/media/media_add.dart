@@ -1,6 +1,5 @@
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:mediaconsumo/components/imput/easy_mask.dart';
 import 'package:mediaconsumo/components/imput/mascara.dart';
 import 'package:mediaconsumo/components/imput/text.dart';
@@ -34,8 +33,8 @@ class MediaAddState extends State {
   var _data = TextEditingController();
   var _posto = TextEditingController();
   var _veiculo = TextEditingController();
-  ValueLabel valuePosto;
-  ValueLabel valueVeiculo;
+  late ValueLabel valuePosto;
+  late ValueLabel valueVeiculo;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -65,7 +64,7 @@ class MediaAddState extends State {
                   validar: true,
                   maxLength: 7,
                   maskFormatter: TextInputMask(mask: '999999', reverse: true),
-                  teclado: TextInputType.numberWithOptions(),
+                  teclado: TextInputType.numberWithOptions(), dica: '', tipoValidar: '', minLines: 7, maxLines: 7,
                 ),
                 MascaraImput(
                   controlador: _litros,
@@ -75,7 +74,7 @@ class MediaAddState extends State {
                   validar: true,
                   maxLength: 7,
                   maskFormatter: TextInputMask(mask: '9999.99', reverse: true),
-                  teclado: TextInputType.numberWithOptions(),
+                  teclado: TextInputType.numberWithOptions(), dica: '', tipoValidar: '', minLines: 7, maxLines: 7,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +91,7 @@ class MediaAddState extends State {
                               icone: Icons.monetization_on,
                               readOnly: true,
                               validar: true,
-                              maxLength: 50,
+                              maxLength: 50, dica: '', tipoValidar: '', minLines: 50, maxLines: 50,
                             ),
                           ),
                         ],
@@ -142,7 +141,7 @@ class MediaAddState extends State {
                               icone: Icons.monetization_on,
                               readOnly: true,
                               validar: true,
-                              maxLength: 20,
+                              maxLength: 20, dica: '', tipoValidar: '', minLines: 20, maxLines: 20,
                             ),
                           ),
                         ],
@@ -192,7 +191,7 @@ class MediaAddState extends State {
                               icone: Icons.monetization_on,
                               readOnly: true,
                               validar: true,
-                              maxLength: 10,
+                              maxLength: 10, dica: '', tipoValidar: '', minLines: 10, maxLines: 10,
                             ),
                           ),
                         ],
@@ -205,31 +204,18 @@ class MediaAddState extends State {
                           Container(
                             child: TextButton(
                               onPressed: () {
-                                DatePicker.showDatePicker(context,
-                                    showTitleActions: true,
-                                    minTime: DateTime(2020),
-                                    maxTime: DateTime(2050),
-                                    theme: DatePickerTheme(
-                                        cancelStyle:
-                                            TextStyle(color: Colors.white),
-                                        headerColor: Colors.green[900],
-                                        backgroundColor: Colors.white,
-                                        itemStyle: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18),
-                                        doneStyle: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16)), onChanged: (date) {
-                                  print('change $date');
-                                }, onConfirm: (date) {
-                                  print('confirm $date');
-                                  String minhaData =
-                                      dataUtils.formatarData(date);
-                                  _data.text = minhaData;
-                                },
-                                    currentTime: DateTime.now(),
-                                    locale: LocaleType.pt);
+                                showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2020),
+                                  lastDate: DateTime(2050),
+                                  locale: const Locale('pt', 'PT'),
+                                ).then((date) {
+                                  if (date != null) {
+                                    String minhaData = dataUtils.formatarData(date);
+                                    _data.text = minhaData;
+                                  }
+                                });
                               },
                               child: Icon(Icons.more_time),
                             ),
@@ -255,7 +241,7 @@ class MediaAddState extends State {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.green,
+                        backgroundColor: Colors.green,
                       ),
                     ),
                   ),
@@ -295,29 +281,31 @@ class MediaAddState extends State {
   }
 
   void salvar() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState?.validate() ?? false) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(ini.process)));
     }
-    String parseData = dataUtils.parseDate(_data.text.toString());
+    String parseData = dataUtils.parseDate(_data.text);
 
-    if (!_kms.text.isEmpty &&
-        !_litros.text.isEmpty &&
-        !_posto.text.isEmpty &&
-        !_veiculo.text.isEmpty &&
-        !_data.text.isEmpty) {
-      if (double.tryParse(_kms.text.toString()) > 0 ||
-          double.tryParse(_litros.text.toString()) > 0) {
-        var m = double.tryParse(_kms.text.toString()) /
-            double.tryParse(_litros.text.toString());
+    // parse input values safely
+    final int kmsInt = int.tryParse(_kms.text) ?? 0;
+    final double litrosDouble = double.tryParse(_litros.text) ?? 0.0;
+
+    if (_kms.text.isNotEmpty &&
+        _litros.text.isNotEmpty &&
+        _posto.text.isNotEmpty &&
+        _veiculo.text.isNotEmpty &&
+        _data.text.isNotEmpty) {
+      if (kmsInt > 0 && litrosDouble > 0) {
+        final double m = kmsInt.toDouble() / litrosDouble;
         await dbHelper.insert(
           Media.name(
-            int.tryParse(_kms.text.toString()),
-            double.tryParse(_litros.text.toString()),
+            kmsInt,
+            litrosDouble,
             valuePosto.value,
-            _posto.text.toString(),
+            _posto.text,
             valueVeiculo.value,
-            _veiculo.text.toString(),
+            _veiculo.text,
             m,
             parseData,
           ),

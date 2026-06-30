@@ -16,17 +16,17 @@ class MascaraImput extends StatelessWidget {
   final maskFormatter;
 
   MascaraImput({
-    this.controlador,
-    this.rotulo,
-    this.dica,
-    this.icone,
+    required this.controlador,
+    required this.rotulo,
+    required this.dica,
+    required this.icone,
     this.teclado,
-    this.readOnly,
-    this.validar,
-    this.tipoValidar,
-    this.maxLength,
-    this.minLines,
-    this.maxLines,
+    required this.readOnly,
+    required this.validar,
+    required this.tipoValidar,
+    required this.maxLength,
+    required this.minLines,
+    required this.maxLines,
     this.maskFormatter,
   });
 

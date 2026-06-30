@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:bs_flutter_selectbox/bs_flutter_selectbox.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:mediaconsumo/components/imput/mascara.dart';
@@ -13,7 +12,7 @@ import 'package:mediaconsumo/utils/ini/veiculo_ini.dart';
 import 'package:select_dialog/select_dialog.dart';
 
 class VeiculoDetalhes extends StatefulWidget {
-  Veiculo veiculo;
+  final Veiculo veiculo;
 
   VeiculoDetalhes(this.veiculo);
 
@@ -25,7 +24,7 @@ class VeiculoDetalhes extends StatefulWidget {
 
 enum Options { delete, update }
 
-class _VeiculoDetalhesState extends State {
+class _VeiculoDetalhesState extends State<VeiculoDetalhes> {
   Veiculo veiculo;
 
   _VeiculoDetalhesState(this.veiculo);
@@ -40,7 +39,7 @@ class _VeiculoDetalhesState extends State {
   var _ano = TextEditingController();
   var _placa = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  ValueLabel valueTipo;
+  ValueLabel? valueTipo;
 
   @override
   void initState() {
@@ -88,6 +87,8 @@ class _VeiculoDetalhesState extends State {
         return 'Caminhão';
       case 4:
         return 'Caminhonete';
+      default:
+        return '';
     }
   }
 
@@ -114,7 +115,7 @@ class _VeiculoDetalhesState extends State {
                             icone: Icons.monetization_on,
                             readOnly: true,
                             validar: true,
-                            maxLength: 20,
+                            maxLength: 20, dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
                           ),
                         ),
                       ],
@@ -137,7 +138,7 @@ class _VeiculoDetalhesState extends State {
                                 onChange: (ValueLabel selected) {
                                   setState(() {
                                     valueTipo = selected;
-                                    _tipo.text = valueTipo.title;
+                                    _tipo.text = selected.title;
                                   });
                                 },
                               );
@@ -155,7 +156,7 @@ class _VeiculoDetalhesState extends State {
                 icone: Icons.monetization_on,
                 readOnly: false,
                 validar: true,
-                maxLength: 15,
+                maxLength: 15, dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
               ),
               TextImput(
                 controlador: _modelo,
@@ -163,7 +164,7 @@ class _VeiculoDetalhesState extends State {
                 icone: Icons.monetization_on,
                 readOnly: false,
                 validar: true,
-                maxLength: 15,
+                maxLength: 15, dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
               ),
               MascaraImput(
                 controlador: _placa,
@@ -173,7 +174,7 @@ class _VeiculoDetalhesState extends State {
                 validar: true,
                 maxLength: 8,
                 maskFormatter:
-                    TextInputMask(mask: ['AAA-9N99', 'AAA-9A99', 'AAA-9999']),
+                    TextInputMask(mask: ['AAA-9N99', 'AAA-9A99', 'AAA-9999']), dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
               ),
               TextImput(
                 controlador: _cor,
@@ -181,7 +182,7 @@ class _VeiculoDetalhesState extends State {
                 icone: Icons.monetization_on,
                 readOnly: false,
                 validar: true,
-                maxLength: 15,
+                maxLength: 15, dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
               ),
               MascaraImput(
                 controlador: _ano,
@@ -191,7 +192,7 @@ class _VeiculoDetalhesState extends State {
                 readOnly: false,
                 validar: true,
                 maxLength: 4,
-                maskFormatter: TextInputMask(mask: '9999'),
+                maskFormatter: TextInputMask(mask: '9999'), dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
               ),
             ],
           ),
@@ -215,17 +216,19 @@ class _VeiculoDetalhesState extends State {
         Navigator.pop(context, true);
         break;
       case Options.update:
-        if (_formKey.currentState.validate()) {
+        if (_formKey.currentState!.validate()) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(ini.process)));
         }
-        var tipo = valueTipo != null? valueTipo.value : veiculo.tipo;
+        var tipo = valueTipo?.value ?? veiculo.tipo;
         if (!_marca.text.isEmpty &&
             !_modelo.text.isEmpty &&
             !_cor.text.isEmpty &&
             !_placa.text.isEmpty &&
             !_tipo.text.isEmpty &&
             !_ano.text.isEmpty) {
+          final ano = int.tryParse(_ano.text) ?? veiculo.ano;
+
           await dbHelper.update(
             Veiculo.withId(
               id: veiculo.id,
@@ -233,7 +236,7 @@ class _VeiculoDetalhesState extends State {
               modelo: _modelo.text.toString(),
               cor: _cor.text.toString(),
               tipo: tipo,
-              ano: int.tryParse(_ano.text),
+              ano: ano,
               placa: _placa.text.toString().toUpperCase(),
             ),
           );

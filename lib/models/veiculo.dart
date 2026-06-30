@@ -1,28 +1,35 @@
 class Veiculo {
-  int id;
-  int value;
-  String marca;
-  String modelo;
-  String cor;
-  int tipo;
-  int ano;
-  String placa;
-  String nome;
-  String title;
+  late int id;
+  late int value;
+  late String marca;
+  late String modelo;
+  late String cor;
+  late int tipo;
+  late int ano;
+  late String placa;
+  late String nome;
+  late String title;
 
   Veiculo.name(
       this.marca, this.modelo, this.cor, this.tipo, this.ano, this.placa);
 
   Veiculo.withId(
-      {this.id,
-      this.marca,
-      this.modelo,
-      this.cor,
-      this.tipo,
-      this.ano,
-      this.placa});
+      {
+        required this.id,
+        required this.marca,
+        required this.modelo,
+        required this.cor,
+        required this.tipo,
+        required this.ano,
+        required this.placa});
 
-  Veiculo({this.marca, this.modelo, this.cor, this.tipo, this.ano, this.placa});
+  Veiculo({
+    required this.marca,
+    required this.modelo,
+    required this.cor,
+    required this.tipo,
+    required this.ano,
+    required this.placa});
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -44,8 +51,8 @@ class Veiculo {
     this.marca = o["marca"].toString();
     this.modelo = o["modelo"].toString();
     this.cor = o["cor"].toString();
-    this.tipo = int.tryParse(o["tipo"].toString());
-    this.ano = int.tryParse(o["ano"].toString());
+    this.tipo = int.tryParse(o["tipo"].toString())!;
+    this.ano = int.tryParse(o["ano"].toString())!;
     this.placa = o["placa"].toString();
   }
 

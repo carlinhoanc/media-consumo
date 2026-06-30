@@ -19,7 +19,7 @@ const String tableSql =
     'cep STRING)';
 
 class PostoHelper {
-  Database _db;
+  late Database _db;
   var ini = DbIni();
 
   Future<Database> get db async {

@@ -1,6 +1,5 @@
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:mediaconsumo/components/imput/mascara.dart';
 import 'package:mediaconsumo/components/imput/text.dart';
 import 'package:mediaconsumo/data/manutencao_helper.dart';
@@ -13,9 +12,10 @@ import 'package:mediaconsumo/utils/utils/date.dart';
 import 'package:select_dialog/select_dialog.dart';
 
 class ManutencaoDetalhes extends StatefulWidget {
-  Manutencao manutencao;
 
-  ManutencaoDetalhes(this.manutencao);
+  final Manutencao manutencao;
+
+  const  ManutencaoDetalhes(this.manutencao);
 
   @override
   State<StatefulWidget> createState() {
@@ -26,24 +26,27 @@ class ManutencaoDetalhes extends StatefulWidget {
 enum Options { delete, update }
 
 class _ManutencaoDetalhesState extends State {
-  Manutencao manutencao;
+
+  late Manutencao manutencao;
 
   _ManutencaoDetalhesState(this.manutencao);
 
   var dataUtils = DataUtils();
   var dbHelper = ManutencaoHelper();
-  var veiculoDb = VeiculoHelper();
+  late var veiculoDb = VeiculoHelper();
   var txt = ManutencaoTexto();
   var ini = IniApp();
-  var _nomeManutencao = TextEditingController();
-  var _descricaoManutencao = TextEditingController();
+  late var _nomeManutencao = TextEditingController();
+  late var _descricaoManutencao = TextEditingController();
   var _dataDaMenutencao = TextEditingController();
   var _kmsAtual = TextEditingController();
   var _kmsProximaManutencao = TextEditingController();
   var _diasProximaManutencao = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var _veiculo = TextEditingController();
-  ValueLabel valueVeiculo;
+  late ValueLabel valueVeiculo;
+
+  get child => null;
 
   @override
   void initState() {
@@ -61,9 +64,7 @@ class _ManutencaoDetalhesState extends State {
             ? '0.0'
             : manutencao.kmsProximaManutencao.toString();
 
-    _diasProximaManutencao.text = manutencao.diasProximaManutencao == null
-        ? '0'
-        : manutencao.diasProximaManutencao.toString();
+    _diasProximaManutencao.text = manutencao.diasProximaManutencao.toString();
     super.initState();
   }
 
@@ -115,7 +116,7 @@ class _ManutencaoDetalhesState extends State {
                             icone: Icons.monetization_on,
                             readOnly: true,
                             validar: true,
-                            maxLength: 20,
+                            maxLength: 20, dica: '', tipoValidar: '', minLines: 20, maxLines: 20,
                           ),
                         ),
                       ],
@@ -155,7 +156,7 @@ class _ManutencaoDetalhesState extends State {
                 rotulo: txt.nomeManutencao,
                 icone: Icons.monetization_on,
                 readOnly: false,
-                validar: true,
+                validar: true, dica: '', tipoValidar: '', maxLength: 5, minLines: 5, maxLines: 5,
               ),
               TextImput(
                 controlador: _descricaoManutencao,
@@ -165,7 +166,7 @@ class _ManutencaoDetalhesState extends State {
                 teclado: TextInputType.multiline,
                 validar: true,
                 maxLines: 5,
-                maxLength: 500,
+                maxLength: 500, dica: '', tipoValidar: '', minLines: 5,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -182,7 +183,7 @@ class _ManutencaoDetalhesState extends State {
                             icone: Icons.monetization_on,
                             readOnly: true,
                             validar: true,
-                            maxLength: 10,
+                            maxLength: 10, dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
                           ),
                         ),
                       ],
@@ -195,30 +196,18 @@ class _ManutencaoDetalhesState extends State {
                         Container(
                           child: TextButton(
                             onPressed: () {
-                              DatePicker.showDatePicker(context,
-                                  showTitleActions: true,
-                                  minTime: DateTime(2020),
-                                  maxTime: DateTime(2050),
-                                  theme: DatePickerTheme(
-                                      cancelStyle:
-                                          TextStyle(color: Colors.white),
-                                      headerColor: Colors.green[900],
-                                      backgroundColor: Colors.white,
-                                      itemStyle: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                      doneStyle: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16)), onChanged: (date) {
-                                print('change $date');
-                              }, onConfirm: (date) {
-                                print('confirm $date');
-                                String minhaData = dataUtils.formatarData(date);
-                                _dataDaMenutencao.text = minhaData;
-                              },
-                                  currentTime: DateTime.now(),
-                                  locale: LocaleType.pt);
+                              showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2020),
+                                lastDate: DateTime(2050),
+                                locale: const Locale('pt', 'PT'),
+                              ).then((date) {
+                                if (date != null) {
+                                  String minhaData = dataUtils.formatarData(date);
+                                  _dataDaMenutencao.text = minhaData;
+                                }
+                              });
                             },
                             child: Icon(Icons.more_time),
                           ),
@@ -236,7 +225,7 @@ class _ManutencaoDetalhesState extends State {
                 readOnly: false,
                 validar: true,
                 maxLength: 4,
-                maskFormatter: TextInputMask(mask: '9999', reverse: true),
+                maskFormatter: TextInputMask(mask: '9999', reverse: true), dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
               ),
               MascaraImput(
                 controlador: _kmsAtual,
@@ -246,7 +235,7 @@ class _ManutencaoDetalhesState extends State {
                 readOnly: false,
                 validar: true,
                 maxLength: 9,
-                maskFormatter: TextInputMask(mask: '99999999', reverse: true),
+                maskFormatter: TextInputMask(mask: '99999999', reverse: true), dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
               ),
               MascaraImput(
                 controlador: _kmsProximaManutencao,
@@ -256,7 +245,7 @@ class _ManutencaoDetalhesState extends State {
                 readOnly: false,
                 validar: true,
                 maxLength: 9,
-                maskFormatter: TextInputMask(mask: '99999999', reverse: true),
+                maskFormatter: TextInputMask(mask: '99999999', reverse: true), dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
               ),
             ],
           ),
@@ -285,7 +274,7 @@ class _ManutencaoDetalhesState extends State {
         Navigator.pop(context, true);
         break;
       case Options.update:
-        if (_formKey.currentState.validate()) {
+        if (_formKey.currentState!.validate()) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(ini.process)));
         }
@@ -300,7 +289,7 @@ class _ManutencaoDetalhesState extends State {
             !_veiculo.text.isEmpty &&
             !_kmsAtual.text.isEmpty) {
           var idVeiculo =
-              valueVeiculo != null ? valueVeiculo.value : manutencao.idVeiculo;
+              valueVeiculo.value;
           await dbHelper.update(
             Manutencao.withId(
               id: manutencao.id,
@@ -309,9 +298,9 @@ class _ManutencaoDetalhesState extends State {
               dataDaManutencao: parseData,
               idVeiculo: idVeiculo,
               veiculo: _veiculo.text.toString(),
-              kmsAtual: int.tryParse(_kmsAtual.text),
-              kmsProximaManutencao: int.tryParse(_kmsProximaManutencao.text),
-              diasProximaManutencao: int.tryParse(_diasProximaManutencao.text),
+              kmsAtual: int.tryParse(_kmsAtual.text) ?? 0 ,
+              kmsProximaManutencao: int.tryParse(_kmsProximaManutencao.text) ?? 0,
+              diasProximaManutencao: int.tryParse(_diasProximaManutencao.text) ?? 0,
             ),
           );
           Navigator.pop(context, true);

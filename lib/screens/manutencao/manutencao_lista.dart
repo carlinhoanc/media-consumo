@@ -18,7 +18,7 @@ class _ManutencaoListState extends State {
   var txt = ManutencaoTexto();
   var dataUtils = DataUtils();
 
-  List<Manutencao> manutencao;
+  late List<Manutencao> manutencao;
   int manutencaoCount = 0;
 
   @override

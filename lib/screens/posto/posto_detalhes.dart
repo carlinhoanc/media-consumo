@@ -44,9 +44,9 @@ class _PostoDetalhesState extends State {
   var _latitude = TextEditingController();
   var _longitude = TextEditingController();
   var _estado = TextEditingController();
-  ValueLabel valueEstado;
+  ValueLabel? valueEstado;
   var _cidadeUf = TextEditingController();
-  ValueLabel valueCidade;
+  ValueLabel? valueCidade;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -102,7 +102,7 @@ class _PostoDetalhesState extends State {
                 rotulo: txt.nomePosto,
                 icone: Icons.monetization_on,
                 readOnly: false,
-                validar: true,
+                validar: true, dica: '', tipoValidar: '', maxLength: 1, minLines: 1, maxLines: 1,
               ),
               TextImput(
                 controlador: _descricao,
@@ -112,7 +112,7 @@ class _PostoDetalhesState extends State {
                 readOnly: false,
                 validar: true,
                 maxLines: 5,
-                maxLength: 500,
+                maxLength: 500, dica: '', tipoValidar: '', minLines: 5,
               ),
               TextImput(
                 controlador: _obs,
@@ -120,7 +120,7 @@ class _PostoDetalhesState extends State {
                 icone: Icons.monetization_on,
                 teclado: TextInputType.multiline,
                 readOnly: false,
-                validar: false,
+                validar: false, dica: '', tipoValidar: '', maxLength: 1, minLines: 1, maxLines: 1,
               ),
               MascaraImput(
                   controlador: _cep,
@@ -131,13 +131,13 @@ class _PostoDetalhesState extends State {
                   validar: false,
                   maxLength: 10,
                   maskFormatter:
-                      TextInputMask(mask: '99.999-999', reverse: true)),
+                      TextInputMask(mask: '99.999-999', reverse: true), dica: '', tipoValidar: '', minLines: 10, maxLines: 10,),
               TextImput(
                 controlador: _rua,
                 rotulo: txt.rua,
                 icone: Icons.monetization_on,
                 readOnly: false,
-                validar: false,
+                validar: false, dica: '', tipoValidar: '', maxLength: 1, minLines: 1, maxLines: 1,
               ),
               MascaraImput(
                 controlador: _numero,
@@ -147,7 +147,7 @@ class _PostoDetalhesState extends State {
                 readOnly: false,
                 validar: false,
                 maxLength: 6,
-                maskFormatter: TextInputMask(mask: '999999', reverse: true),
+                maskFormatter: TextInputMask(mask: '999999', reverse: true), dica: '', tipoValidar: '', minLines: 6, maxLines: 6,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -164,7 +164,7 @@ class _PostoDetalhesState extends State {
                             icone: Icons.monetization_on,
                             readOnly: true,
                             validar: true,
-                            maxLength: 20,
+                            maxLength: 20, dica: '', tipoValidar: '', minLines: 20, maxLines: 20,
                           ),
                         ),
                       ],
@@ -187,7 +187,7 @@ class _PostoDetalhesState extends State {
                                 onChange: (ValueLabel selected) {
                                   setState(() {
                                     valueEstado = selected;
-                                    _estado.text = valueEstado.title;
+                                    _estado.text = valueEstado!.title;
                                   });
                                 },
                               );
@@ -214,7 +214,7 @@ class _PostoDetalhesState extends State {
                             icone: Icons.monetization_on,
                             readOnly: true,
                             validar: true,
-                            maxLength: 35,
+                            maxLength: 35, dica: '', tipoValidar: '', minLines: 35, maxLines: 35,
                           ),
                         ),
                       ],
@@ -228,30 +228,26 @@ class _PostoDetalhesState extends State {
                           child: ElevatedButton(
                             child: Icon(Icons.add_circle_outline),
                             onPressed: () {
-                              if (valueEstado != null) {
-                                SelectDialog.showModal<ValueLabel>(
-                                  context,
-                                  showSearchBox: false,
-                                  label: "Selecione uma cidade",
-                                  selectedValue: valueCidade,
-                                  onFind: (String filter) =>
-                                      loadCidades(valueEstado.value),
-                                  onChange: (ValueLabel selected) {
-                                    setState(() {
-                                      valueCidade = selected;
-                                      _cidadeUf.text = valueCidade.title;
-                                    });
-                                  },
-                                );
-                              } else {
-                                null;
-                              }
-                            },
+                              SelectDialog.showModal<ValueLabel>(
+                                context,
+                                showSearchBox: false,
+                                label: "Selecione uma cidade",
+                                selectedValue: valueCidade,
+                                onFind: (String filter) =>
+                                    (valueEstado == null)
+                                        ? Future.value([])
+                                        : loadCidades(valueEstado!.value),
+                                onChange: (ValueLabel selected) {
+                                  setState(() {
+                                    valueCidade = selected;
+                                    _cidadeUf.text = valueCidade!.title;
+                                  });
+                                },
+                              );
+                                                        },
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  (valueEstado != null)
-                                      ? Colors.blue[400]
-                                      : Colors.grey),
+                                  (valueEstado != null)? Colors.blue.shade400 : Colors.grey),
                             ),
                           ),
                         ),
@@ -267,7 +263,7 @@ class _PostoDetalhesState extends State {
                 teclado: TextInputType.number,
                 readOnly: false,
                 validar: false,
-                maxLength: 20,
+                maxLength: 20, dica: '', tipoValidar: '', minLines: 20, maxLines: 20,
               ),
               MascaraImput(
                 controlador: _longitude,
@@ -276,7 +272,7 @@ class _PostoDetalhesState extends State {
                 teclado: TextInputType.number,
                 readOnly: false,
                 validar: false,
-                maxLength: 20,
+                maxLength: 20, dica: '', tipoValidar: '', minLines: 20, maxLines: 20,
               ),
             ],
           ),
@@ -285,7 +281,7 @@ class _PostoDetalhesState extends State {
     );
   }
 
-  static Response response;
+  static late Response response;
   Future<List<ValueLabel>> loadEstados() async {
     try {
       Uri url = Uri.http(
@@ -302,13 +298,10 @@ class _PostoDetalhesState extends State {
     } catch (e) {
       print(e);
     }
+    return [];
   }
 
   Future<List<ValueLabel>> loadCidades(int id) async {
-    if (id == null) {
-      return null;
-    }
-
     try {
       Uri url = Uri.http(
         'servicodados.ibge.gov.br',
@@ -323,6 +316,7 @@ class _PostoDetalhesState extends State {
     } catch (e) {
       print(e);
     }
+    return [];
   }
 
   void selectProcess(Options options) async {
@@ -332,7 +326,7 @@ class _PostoDetalhesState extends State {
         Navigator.pop(context, true);
         break;
       case Options.update:
-        if (_formKey.currentState.validate()) {
+        if (_formKey.currentState!.validate()) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(ini.process)));
         }

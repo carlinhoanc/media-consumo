@@ -16,7 +16,7 @@ const String tableSql = 'CREATE TABLE $_tabelaNome(id INTEGER PRIMARY KEY,'
     'media DOUBLE)';
 
 class MediaHelper {
-  Database _db;
+  late Database _db;
   var ini = DbIni();
 
   Future<Database> get db async {

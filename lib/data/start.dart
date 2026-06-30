@@ -44,7 +44,7 @@ const String manutencoes = 'CREATE TABLE manutencoes ( id INTEGER PRIMARY KEY,'
     'dataDaManutencao DATETIME);';
 
 class Start {
-  Database _db;
+  late Database _db;
   var ini = DbIni();
 
   Future<Database> get db async {

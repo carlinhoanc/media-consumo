@@ -17,7 +17,7 @@ String tableSql =
     'dataDaManutencao DATETIME)';
 
 class ManutencaoHelper {
-  Database _db;
+  late Database _db;
   var ini = DbIni();
 
   Future<Database> get db async {

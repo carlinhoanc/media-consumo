@@ -35,9 +35,9 @@ class PostoAddState extends State {
   var _latitude = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var _estado = TextEditingController();
-  ValueLabel valueEstado;
+  ValueLabel? valueEstado;
   var _cidadeUf = TextEditingController();
-  ValueLabel valueCidade;
+  ValueLabel? valueCidade;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class PostoAddState extends State {
                   rotulo: txt.nomePosto,
                   icone: Icons.monetization_on,
                   readOnly: false,
-                  validar: true,
+                  validar: true, dica: '', tipoValidar: '', maxLength: 5, minLines: 5, maxLines: 5,
                 ),
                 TextImput(
                   controlador: _descricao,
@@ -67,7 +67,7 @@ class PostoAddState extends State {
                   readOnly: false,
                   validar: true,
                   maxLines: 5,
-                  maxLength: 500,
+                  maxLength: 500, dica: '', tipoValidar: '', minLines: 5,
                 ),
                 TextImput(
                   controlador: _obs,
@@ -76,7 +76,7 @@ class PostoAddState extends State {
                   teclado: TextInputType.multiline,
                   readOnly: false,
                   validar: false,
-                  maxLength: 500,
+                  maxLength: 500, dica: '', tipoValidar: '', minLines: 10, maxLines: 10,
                 ),
                 MascaraImput(
                   controlador: _cep,
@@ -87,14 +87,14 @@ class PostoAddState extends State {
                       TextInputMask(mask: '99.999-999', reverse: true),
                   readOnly: false,
                   validar: false,
-                  maxLength: 10,
+                  maxLength: 10, dica: '', tipoValidar: '', minLines: 10, maxLines: 10,
                 ),
                 TextImput(
                   controlador: _rua,
                   rotulo: txt.rua,
                   icone: Icons.monetization_on,
                   readOnly: false,
-                  validar: false,
+                  validar: false, dica: '', tipoValidar: '', maxLength: 5, minLines: 5, maxLines: 5,
                 ),
                 TextImput(
                   controlador: _numero,
@@ -103,7 +103,7 @@ class PostoAddState extends State {
                   teclado: TextInputType.numberWithOptions(),
                   readOnly: false,
                   validar: false,
-                  maxLength: 6,
+                  maxLength: 6, dica: '', tipoValidar: '', minLines: 6, maxLines: 6,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -120,7 +120,7 @@ class PostoAddState extends State {
                               icone: Icons.monetization_on,
                               readOnly: true,
                               validar: true,
-                              maxLength: 20,
+                              maxLength: 20, dica: '', tipoValidar: '', minLines: 20, maxLines: 20,
                             ),
                           ),
                         ],
@@ -143,7 +143,7 @@ class PostoAddState extends State {
                                   onChange: (ValueLabel selected) {
                                     setState(() {
                                       valueEstado = selected;
-                                      _estado.text = valueEstado.title;
+                                      _estado.text = valueEstado!.title;
                                     });
                                   },
                                 );
@@ -170,7 +170,7 @@ class PostoAddState extends State {
                               icone: Icons.monetization_on,
                               readOnly: true,
                               validar: true,
-                              maxLength: 35,
+                              maxLength: 35, dica: '', tipoValidar: '', minLines: 35, maxLines: 35,
                             ),
                           ),
                         ],
@@ -184,30 +184,26 @@ class PostoAddState extends State {
                             child: ElevatedButton(
                               child: Icon(Icons.add_circle_outline),
                               onPressed: () {
-                                if (valueEstado != null) {
-                                  SelectDialog.showModal<ValueLabel>(
-                                    context,
-                                    showSearchBox: false,
-                                    label: "Selecione uma cidade",
-                                    selectedValue: valueCidade,
-                                    onFind: (String filter) =>
-                                        loadCidades(valueEstado.value),
-                                    onChange: (ValueLabel selected) {
-                                      setState(() {
-                                        valueCidade = selected;
-                                        _cidadeUf.text = valueCidade.title;
-                                      });
-                                    },
-                                  );
-                                } else {
-                                  null;
-                                }
-                              },
+                                SelectDialog.showModal<ValueLabel>(
+                                  context,
+                                  showSearchBox: false,
+                                  label: "Selecione uma cidade",
+                                  selectedValue: valueCidade,
+                                  onFind: (String filter) =>
+                                      loadCidades(valueEstado!.value),
+                                  onChange: (ValueLabel selected) {
+                                    setState(() {
+                                      valueCidade = selected;
+                                      _cidadeUf.text = valueCidade!.title;
+                                    });
+                                  },
+                                );
+                                                            },
                               style: ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(
                                         (valueEstado != null)
-                                            ? Colors.blue[400]
+                                            ? Colors.blue.shade400
                                             : Colors.grey),
                               ),
                             ),
@@ -224,7 +220,7 @@ class PostoAddState extends State {
                   teclado: TextInputType.number,
                   readOnly: false,
                   validar: false,
-                  maxLength: 20,
+                  maxLength: 20, dica: '', tipoValidar: '', minLines: 20, maxLines: 20,
                 ),
                 TextImput(
                   controlador: _longitude,
@@ -233,7 +229,7 @@ class PostoAddState extends State {
                   teclado: TextInputType.number,
                   readOnly: false,
                   validar: false,
-                  maxLength: 00,
+                  maxLength: 1, dica: '', tipoValidar: '', minLines: 1, maxLines: 1,
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -251,7 +247,7 @@ class PostoAddState extends State {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.green,
+                        backgroundColor: Colors.green,
                       ),
                     ),
                   ),
@@ -264,7 +260,7 @@ class PostoAddState extends State {
     );
   }
 
-  static Response response;
+  static late Response response;
 
   Future<List<ValueLabel>> loadEstados() async {
     try {
@@ -282,13 +278,10 @@ class PostoAddState extends State {
     } catch (e) {
       print(e);
     }
+    return [];
   }
 
   Future<List<ValueLabel>> loadCidades(int id) async {
-    if (id == null) {
-      return null;
-    }
-
     try {
       Uri url = Uri.http(
         'servicodados.ibge.gov.br',
@@ -303,10 +296,11 @@ class PostoAddState extends State {
     } catch (e) {
       print(e);
     }
+    return [];
   }
 
   void salvar() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(ini.process)));
     }

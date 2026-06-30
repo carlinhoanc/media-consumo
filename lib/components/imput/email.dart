@@ -9,7 +9,12 @@ class Email extends StatelessWidget {
   final tecladoNumerico;
 
 
-  Email({this.controlador, this.rotulo, this.dica, this.icone, this.tecladoNumerico});
+  Email({
+    required this.controlador,
+    required this.rotulo,
+    required this.dica,
+    required this.icone,
+    this.tecladoNumerico});
 
   @override
   Widget build(BuildContext context) {

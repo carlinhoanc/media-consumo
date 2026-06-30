@@ -9,7 +9,11 @@ class Fone extends StatelessWidget {
   final tecladoNumerico;
 
 
-  Fone({this.controlador, this.rotulo, this.dica, this.icone, this.tecladoNumerico});
+  Fone({
+    required this.controlador,
+    required this.rotulo,
+    required this.dica,
+    required this.icone, this.tecladoNumerico});
 
   @override
   Widget build(BuildContext context) {

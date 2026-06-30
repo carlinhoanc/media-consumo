@@ -13,7 +13,7 @@ class MediaConsumo extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.green[900],
-        accentColor: Colors.blue[900],
+        hintColor: Colors.blue[900],
         buttonTheme: ButtonThemeData(
           buttonColor: Colors.blue[700],
           textTheme: ButtonTextTheme.accent,
